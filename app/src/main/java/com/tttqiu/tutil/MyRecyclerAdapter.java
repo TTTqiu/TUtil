@@ -30,7 +30,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        TUtil.loadImageInto(context,images[position],holder.imageView);
+        TUtil.loadImageInto(context, images[position], holder.imageView,TUtil.DEFAULT,TUtil.DEFAULT);
     }
 
     @Override

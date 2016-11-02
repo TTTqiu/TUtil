@@ -44,14 +44,12 @@ public class MainActivity extends AppCompatActivity {
             "http://pic3.zhimg.com/ec0804c3ffd7e651cdf690e98bd92bbe.jpg",
             "http://pic4.zhimg.com/00dcdb7e8c767236d2b1caacbb052fff.jpg",
             "http://pic3.zhimg.com/238f1c3236fb288348baff8f81034ab6.jpg",
-            "http://pic1.zhimg.com/909b5036a19c17de322177755a6fcecc.jpg"};
+            "http://pic1.zhimg.com/909b5036a19c17de322177755a6fcecc.jpg",};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));

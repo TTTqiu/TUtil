@@ -13,20 +13,25 @@ import java.net.URL;
 
 /**
  * 从网络获取bitmap，并加载到传入的ImageView中
+ * 获取成功后，在内存和文件中分别保存一份
  */
 
-public class GetBitmapFromHttpTask extends AsyncTask<Object,Void,Bitmap>{
+class GetBitmapFromHttpTask extends AsyncTask<Object, Void, Bitmap> {
 
     private Context context;
     private ImageView imageView;
     private String address;
+    private int maxMemorySpace;
+    private int maxDiskSpace;
 
     @Override
     protected Bitmap doInBackground(Object... params) {
-        context=(Context) params[0];
-        address=(String) params[1];
-        imageView=(ImageView) params[2];
-        Bitmap bitmap=null;
+        context = (Context) params[0];
+        address = (String) params[1];
+        imageView = (ImageView) params[2];
+        maxMemorySpace = (int) params[3];
+        maxDiskSpace = (int) params[4];
+        Bitmap bitmap = null;
 
         HttpURLConnection connection = null;
         try {
@@ -52,9 +57,13 @@ public class GetBitmapFromHttpTask extends AsyncTask<Object,Void,Bitmap>{
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        Log.d("TUtil", "从网络读取:" + bitmap+"("+address+")");
+        Log.d("TUtil", "NET：从网络读取:" + bitmap + "(" + address + ")");
         imageView.setImageBitmap(bitmap);
-        MemoryCacheUtil.putBitmapToMemory(address,bitmap);
-        DiskCacheUtil.putBitmapToDisk(context,address,bitmap);
+        if (maxMemorySpace != 0) {
+            MemoryCacheUtil.putBitmapToMemory(address, bitmap);
+        }
+        if (maxDiskSpace != 0) {
+            DiskCacheUtil.putBitmapToDisk(context, address, bitmap);
+        }
     }
 }
