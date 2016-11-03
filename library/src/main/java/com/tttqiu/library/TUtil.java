@@ -2,6 +2,8 @@ package com.tttqiu.library;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
@@ -47,6 +49,9 @@ public class TUtil {
      */
     public static void loadImageInto(Context context, String address, ImageView imageView,
                                      int maxMemorySpace, int maxDiskSpace) {
+        // 透明占位图
+        imageView.setImageDrawable(new ColorDrawable(Color.WHITE));
+        imageView.setImageAlpha(0);
         Bitmap bitmap = null;
         setCacheSpace(maxMemorySpace,maxDiskSpace);
         if (maxMemorySpace != DISABLE) {
@@ -59,6 +64,7 @@ public class TUtil {
             getBitmapFromHttp(context, address, imageView,maxMemorySpace,maxDiskSpace);
             return;
         }
+        imageView.setImageAlpha(255);
         imageView.setImageBitmap(bitmap);
     }
 

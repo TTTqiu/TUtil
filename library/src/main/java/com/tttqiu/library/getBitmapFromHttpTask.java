@@ -58,6 +58,7 @@ class GetBitmapFromHttpTask extends AsyncTask<Object, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         Log.d("TUtil", "NET：从网络读取:" + bitmap + "(" + address + ")");
+        imageView.setImageAlpha(255);
         imageView.setImageBitmap(bitmap);
         if (maxMemorySpace != 0) {
             MemoryCacheUtil.putBitmapToMemory(address, bitmap);
