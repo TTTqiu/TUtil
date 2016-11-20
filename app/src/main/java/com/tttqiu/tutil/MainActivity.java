@@ -1,21 +1,19 @@
 package com.tttqiu.tutil;
 
-import android.graphics.Picture;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.Button;
 
 import com.tttqiu.library.TUtil;
+import com.tttqiu.library.http.RequestQueue;
+import com.tttqiu.library.request.StringRequest;
 
-import java.io.File;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-public class MainActivity extends AppCompatActivity {
+    private RequestQueue mRequestQueue;
 
-    private String[] images={
+    private String[] images = {
             "http://pic2.zhimg.com/bd24a341131d7fd8a6d832b8dbe08f15.jpg",
             "http://pic3.zhimg.com/fa745034caf4bd52fe2c981b3f6cbece.jpg",
             "http://pic3.zhimg.com/897ec7e842839dbcdfb80ccce0f6e0fa.jpg",
@@ -51,9 +49,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-        MyRecyclerAdapter adapter=new MyRecyclerAdapter(this,images);
-        recyclerView.setAdapter(adapter);
+//        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
+//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+//        MyRecyclerAdapter adapter=new MyRecyclerAdapter(this,images);
+//        recyclerView.setAdapter(adapter);
+
+        Button button1 = (Button) findViewById(R.id.button1);
+        button1.setOnClickListener(this);
+        Button button2 = (Button) findViewById(R.id.button2);
+        button2.setOnClickListener(this);
+        Button button3 = (Button) findViewById(R.id.button3);
+        button3.setOnClickListener(this);
+        Button button4 = (Button) findViewById(R.id.button4);
+        button4.setOnClickListener(this);
+        Button button5 = (Button) findViewById(R.id.button5);
+        button5.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.button1:
+                mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
+                break;
+            case R.id.button2:
+                for (int i=0;i<20;i++){
+                    StringRequest request=new StringRequest();
+                    mRequestQueue.addRequest(request);
+                }
+                break;
+            case R.id.button3:
+                mRequestQueue.start();
+                break;
+            case R.id.button4:
+                mRequestQueue.stop();
+                break;
+            case R.id.button5:
+                mRequestQueue.clear();
+                break;
+            default:
+                break;
+        }
     }
 }

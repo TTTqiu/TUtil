@@ -1,4 +1,4 @@
-package com.tttqiu.library;
+package com.tttqiu.library.imageCache;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,7 +16,7 @@ import java.net.URL;
  * 获取成功后，在内存和文件中分别保存一份
  */
 
-class GetBitmapFromHttpTask extends AsyncTask<Object, Void, Bitmap> {
+ class GetBitmapFromHttpTask extends AsyncTask<Object, Void, Bitmap> {
 
     private Context context;
     private ImageView imageView;
@@ -57,14 +57,14 @@ class GetBitmapFromHttpTask extends AsyncTask<Object, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        Log.d("TUtil", "NET：从网络读取:" + bitmap + "(" + address + ")");
+        Log.d("TUtil_Image", "NET：从网络读取:" + bitmap + "(" + address + ")");
         imageView.setImageAlpha(255);
         imageView.setImageBitmap(bitmap);
-        if (maxMemorySpace != 0) {
-            MemoryCacheUtil.putBitmapToMemory(address, bitmap);
-        }
-        if (maxDiskSpace != 0) {
-            DiskCacheUtil.putBitmapToDisk(context, address, bitmap);
-        }
+//        if (maxMemorySpace != 0) {
+//            MemoryCacheUtil.putBitmapToMemory(address, bitmap);
+//        }
+//        if (maxDiskSpace != 0) {
+//            DiskCacheUtil.putBitmapToDisk(context, address, bitmap);
+//        }
     }
 }

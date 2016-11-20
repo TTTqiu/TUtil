@@ -1,4 +1,4 @@
-package com.tttqiu.library;
+package com.tttqiu.library.imageCache;
 
 
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import java.io.File;
@@ -32,18 +31,18 @@ class DiskCacheUtil {
     // 磁盘最小空余空间，单位MB
     private static final int MIN_DISK_FREE_SPACE = 100;
     // 使用的最大文件存储空间，单位B
-    private static int maxSize = 100 * 1024 * 1024;
+    private int maxSize = 100 * 1024 * 1024;
 
     /**
      * 将图片存入文件
-     *
+     * <p>
      * 每次存入前检查
      * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时
      * 根据最后修改时间，删除掉30%最不常用的文件
      */
-    static void putBitmapToDisk(Context context, String address, Bitmap bitmap) {
+    void putBitmapToDisk(Context context, String address, Bitmap bitmap) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Log.d("TUtil", "DC：外部存储不可用");
+            Log.d("TUtil_Image", "DC：外部存储不可用");
             return;
         }
 
@@ -62,7 +61,7 @@ class DiskCacheUtil {
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
         try {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
-            Log.d("TUtil", "DC：存入文件：" + bitmap + "(" + fileName + ")");
+            Log.d("TUtil_Image", "DC：存入文件：" + bitmap + "(" + fileName + ")");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,9 +72,9 @@ class DiskCacheUtil {
      * 从文件中获取图片
      * 如果获取到，并且putToMemory为true，就在内存中存一份
      */
-    static Bitmap getBitmapFromDisk(Context context, String address, Boolean putToMemory) {
+    Bitmap getBitmapFromDisk(Context context, String address, MemoryCacheUtil mMemoryCacheUtil) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Log.d("TUtil", "DC：外部存储不可用");
+            Log.d("TUtil_Image", "DC：外部存储不可用");
             return null;
         }
 
@@ -87,9 +86,9 @@ class DiskCacheUtil {
         Bitmap bitmap = BitmapFactory.decodeFile(
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + fileName);
         if (bitmap != null) {
-            Log.d("TUtil", "DC：从文件读取：" + bitmap + "(" + address + ")");
-            if (putToMemory) {
-                MemoryCacheUtil.putBitmapToMemory(address, bitmap);
+            Log.d("TUtil_Image", "DC：从文件读取：" + bitmap + "(" + address + ")");
+            if (mMemoryCacheUtil!=null) {
+                mMemoryCacheUtil.putBitmapToMemory(address, bitmap);
             }
         }
         return bitmap;
@@ -98,7 +97,7 @@ class DiskCacheUtil {
     /**
      * 设置最大内存缓存空间
      */
-    static void setDiskCacheSpace(int maxSpace) {
+    void setDiskCacheSpace(int maxSpace) {
         if (maxSpace > 0) {
             maxSize = maxSpace * 1024 * 1024;
         }
@@ -109,7 +108,7 @@ class DiskCacheUtil {
      * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时
      * 根据最后修改时间，删除掉30%最不常用的文件
      */
-    private static void trimDiskCache(String dirPath) {
+    private void trimDiskCache(String dirPath) {
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
 
@@ -123,15 +122,15 @@ class DiskCacheUtil {
             dirSize += file.length();
         }
 
-        Log.d("TUtil", "DC：文件存储空间：" + maxSize);
-        Log.d("TUtil", "DC：文件总大小：" + dirSize);
+        Log.d("TUtil_Image", "DC：文件存储空间：" + maxSize);
+        Log.d("TUtil_Image", "DC：文件总大小：" + dirSize);
 
         // 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，删除掉30%最不常用的文件
         if (dirSize > maxSize || MIN_DISK_FREE_SPACE > DiskFreeSpace()) {
             int removeCount = (int) (0.3 * files.length);
             Arrays.sort(files, new FileLastModifiedSort());
             for (int i = 0; i < removeCount; i++) {
-                Log.d("TUtil", "DC：删除文件：" + files[i].getName()+"("+files[i].lastModified()+")");
+                Log.d("TUtil_Image", "DC：删除文件：" + files[i].getName() + "(" + files[i].lastModified() + ")");
                 files[i].delete();
             }
         }
@@ -141,16 +140,30 @@ class DiskCacheUtil {
     /**
      * 设置文件最后修改时间
      */
-    private static void setFileModifiedTime(Context context, String fileName) {
+    private void setFileModifiedTime(Context context, String fileName) {
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
         long newModifiedTime = System.currentTimeMillis();
         file.setLastModified(newModifiedTime);
     }
 
     /**
+     * 计算Disk上的剩余空间
+     */
+    private int DiskFreeSpace() {
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        long diskFree;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            diskFree = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
+        } else {
+            diskFree = stat.getAvailableBlocks() * stat.getBlockSize();
+        }
+        return (int) diskFree / (1024 * 1024);
+    }
+
+    /**
      * 根据文件的最后修改时间进行排序
      */
-    private static class FileLastModifiedSort implements Comparator<File> {
+    private class FileLastModifiedSort implements Comparator<File> {
         public int compare(File file0, File file1) {
             if (file0.lastModified() > file1.lastModified()) {
                 return 1;
@@ -160,19 +173,5 @@ class DiskCacheUtil {
                 return -1;
             }
         }
-    }
-
-    /**
-     * 计算Disk上的剩余空间
-     */
-    private static int DiskFreeSpace() {
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        long diskFree;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            diskFree = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
-        } else {
-            diskFree = stat.getAvailableBlocks() * stat.getBlockSize();
-        }
-        return (int) diskFree/(1024*1024);
     }
 }

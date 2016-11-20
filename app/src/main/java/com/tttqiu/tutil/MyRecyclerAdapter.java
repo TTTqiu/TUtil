@@ -9,8 +9,6 @@ import android.widget.ImageView;
 
 import com.tttqiu.library.TUtil;
 
-import java.util.List;
-
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder> {
 
     private String[] images;
@@ -29,8 +27,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        TUtil.loadImageInto(context, images[position], holder.imageView,TUtil.DEFAULT,TUtil.DEFAULT);
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+        TUtil.loadImageInto(context, images[position], holder.imageView, TUtil.CACHE_DISABLE, TUtil.CACHE_DISABLE);
     }
 
     @Override
