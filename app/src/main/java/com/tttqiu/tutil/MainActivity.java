@@ -2,11 +2,16 @@ package com.tttqiu.tutil;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.tttqiu.library.TUtil;
-import com.tttqiu.library.http.RequestQueue;
+import com.tttqiu.library.network.RequestQueue;
+import com.tttqiu.library.request.GsonRequest;
+import com.tttqiu.library.request.Request;
 import com.tttqiu.library.request.StringRequest;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -54,41 +59,70 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        MyRecyclerAdapter adapter=new MyRecyclerAdapter(this,images);
 //        recyclerView.setAdapter(adapter);
 
-        Button button1 = (Button) findViewById(R.id.button1);
-        button1.setOnClickListener(this);
-        Button button2 = (Button) findViewById(R.id.button2);
-        button2.setOnClickListener(this);
-        Button button3 = (Button) findViewById(R.id.button3);
-        button3.setOnClickListener(this);
-        Button button4 = (Button) findViewById(R.id.button4);
-        button4.setOnClickListener(this);
-        Button button5 = (Button) findViewById(R.id.button5);
-        button5.setOnClickListener(this);
+//        Button button1 = (Button) findViewById(R.id.button1);
+//        button1.setOnClickListener(this);
+//        Button button2 = (Button) findViewById(R.id.button2);
+//        button2.setOnClickListener(this);
+//        Button button3 = (Button) findViewById(R.id.button3);
+//        button3.setOnClickListener(this);
+//        Button button4 = (Button) findViewById(R.id.button4);
+//        button4.setOnClickListener(this);
+//        Button button5 = (Button) findViewById(R.id.button5);
+//        button5.setOnClickListener(this);
+
+        mRequestQueue=TUtil.startRequestQueue(TUtil.CACHE_DEFAULT);
+        GsonRequest<TitleBean> request=new GsonRequest<>("http://news-at.zhihu.com/api/4/news/latest",
+                TitleBean.class,new Request.RequestListener<TitleBean>() {
+                    @Override
+                    public void onComplete(TitleBean response) {
+                        Log.d("ppqq",""+response.getDate());
+                        Log.d("ppqq",""+response.getStories()[0].getTitle());
+                        Log.d("ppqq",""+response.getStories()[0].getImages()[0]);
+                        Log.d("ppqq",""+response.getStories()[0].getId());
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+
+                    }
+                });
+        mRequestQueue.addRequest(request);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.button1:
-                mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
-                break;
-            case R.id.button2:
-                for (int i=0;i<20;i++){
-                    StringRequest request=new StringRequest();
-                    mRequestQueue.addRequest(request);
-                }
-                break;
-            case R.id.button3:
-                mRequestQueue.start();
-                break;
-            case R.id.button4:
-                mRequestQueue.stop();
-                break;
-            case R.id.button5:
-                mRequestQueue.clear();
-                break;
-            default:
-                break;
-        }
+//        switch (view.getId()){
+//            case R.id.button1:
+//                mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
+//                break;
+//            case R.id.button2:
+//                for (int i=0;i<20;i++){
+//                    StringRequest request=new StringRequest("http://bbs.3dmgame.com/forum.php",
+//                            new Request.RequestListener<String>() {
+//                        @Override
+//                        public void onComplete(String response) {
+//                            Log.d("ppqq",response);
+//                        }
+//
+//                        @Override
+//                        public void onError(String errorMessage) {
+//                            Log.d("ppqq",errorMessage);
+//                        }
+//                    });
+//                    mRequestQueue.addRequest(request);
+//                }
+//                break;
+//            case R.id.button3:
+//                mRequestQueue.start();
+//                break;
+//            case R.id.button4:
+//                mRequestQueue.stop();
+//                break;
+//            case R.id.button5:
+//                mRequestQueue.clear();
+//                break;
+//            default:
+//                break;
+//        }
     }
 }

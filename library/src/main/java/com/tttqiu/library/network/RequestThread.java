@@ -1,4 +1,4 @@
-package com.tttqiu.library.http;
+package com.tttqiu.library.network;
 
 import android.util.Log;
 
@@ -22,10 +22,10 @@ class RequestThread extends Thread{
     public void run() {
         try {
             while (!isInterrupted()){
-                sleep(2000);
                 Request<?> request=queue.take();
                 Log.d("TUtil_Network","当前线程："+Thread.currentThread().getName());
                 Log.d("TUtil_Network","queue size:"+queue.size());
+                request.send();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

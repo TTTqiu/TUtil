@@ -1,15 +1,11 @@
 package com.tttqiu.library;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.tttqiu.library.http.RequestQueue;
+import com.tttqiu.library.network.RequestQueue;
 import com.tttqiu.library.imageCache.ImageLoader;
-
-import java.util.concurrent.ExecutorService;
 
 public class TUtil {
 

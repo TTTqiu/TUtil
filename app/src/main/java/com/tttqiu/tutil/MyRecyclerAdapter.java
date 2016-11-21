@@ -1,6 +1,7 @@
 package com.tttqiu.tutil;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tttqiu.library.TUtil;
+import com.tttqiu.library.network.RequestQueue;
+import com.tttqiu.library.request.BitmapRequest;
+import com.tttqiu.library.request.Request;
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder> {
 
@@ -28,7 +32,20 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        TUtil.loadImageInto(context, images[position], holder.imageView, TUtil.CACHE_DISABLE, TUtil.CACHE_DISABLE);
+//        TUtil.loadImageInto(context, images[position], holder.imageView, TUtil.CACHE_DISABLE, TUtil.CACHE_DISABLE);
+        RequestQueue mRequestQueue=TUtil.startRequestQueue(TUtil.CACHE_DEFAULT);
+        BitmapRequest request=new BitmapRequest(images[position], new Request.RequestListener<Bitmap>() {
+            @Override
+            public void onComplete(Bitmap response) {
+                holder.imageView.setImageBitmap(response);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
+        mRequestQueue.addRequest(request);
     }
 
     @Override
