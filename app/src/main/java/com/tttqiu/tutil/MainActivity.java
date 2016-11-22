@@ -14,7 +14,7 @@ import com.tttqiu.library.request.GsonRequest;
 import com.tttqiu.library.request.Request;
 import com.tttqiu.library.request.StringRequest;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RequestQueue mRequestQueue;
 
@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
-//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-//        MyRecyclerAdapter adapter=new MyRecyclerAdapter(this,images);
-//        recyclerView.setAdapter(adapter);
+        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        MyRecyclerAdapter adapter=new MyRecyclerAdapter(this,images);
+        recyclerView.setAdapter(adapter);
 
 //        Button button1 = (Button) findViewById(R.id.button1);
 //        button1.setOnClickListener(this);
@@ -70,23 +70,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        Button button5 = (Button) findViewById(R.id.button5);
 //        button5.setOnClickListener(this);
 
-        mRequestQueue=TUtil.startRequestQueue(TUtil.CACHE_DEFAULT);
-        GsonRequest<TitleBean> request=new GsonRequest<>("http://news-at.zhihu.com/api/4/news/latest",
-                TitleBean.class,new Request.RequestListener<TitleBean>() {
-                    @Override
-                    public void onComplete(TitleBean response) {
-                        Log.d("ppqq",""+response.getDate());
-                        Log.d("ppqq",""+response.getStories()[0].getTitle());
-                        Log.d("ppqq",""+response.getStories()[0].getImages()[0]);
-                        Log.d("ppqq",""+response.getStories()[0].getId());
-                    }
+//        mRequestQueue=TUtil.startRequestQueue(TUtil.CACHE_DEFAULT);
+//        GsonRequest<TitleBean> request=new GsonRequest<>("http://news-at.zhihu.com/api/4/news/latest",
+//                TitleBean.class,new Request.RequestListener<TitleBean>() {
+//                    @Override
+//                    public void onComplete(TitleBean result) {
+//                        Log.d("ppqq",""+result.getDate());
+//                        Log.d("ppqq",""+result.getStories()[0].getTitle());
+//                        Log.d("ppqq",""+result.getStories()[0].getImages()[0]);
+//                        Log.d("ppqq",""+result.getStories()[0].getId());
+//                    }
+//
+//                    @Override
+//                    public void onError(String errorMessage) {
+//
+//                    }
+//                });
+//        mRequestQueue.addRequest(request);
 
-                    @Override
-                    public void onError(String errorMessage) {
 
-                    }
-                });
-        mRequestQueue.addRequest(request);
+//        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
+//        for (int i = 0; i < 20; i++) {
+//            StringRequest request = new StringRequest("http://blog.csdn.net/bboyfeiyu/article/details/43015859",
+//                    new Request.RequestListener<String>() {
+//                        @Override
+//                        public void onComplete(String result) {
+//                            Log.d("ppqq", result);
+//                        }
+//
+//                        @Override
+//                        public void onError(String errorMessage) {
+//                            Log.d("ppqq", errorMessage);
+//                        }
+//                    });
+//            mRequestQueue.addRequest(request);
+//        }
     }
 
     @Override
@@ -97,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                break;
 //            case R.id.button2:
 //                for (int i=0;i<20;i++){
-//                    StringRequest request=new StringRequest("http://bbs.3dmgame.com/forum.php",
+//                    StringRequest request=new StringRequest("http://blog.csdn.net/bboyfeiyu/article/details/43015859",
 //                            new Request.RequestListener<String>() {
 //                        @Override
 //                        public void onComplete(String response) {

@@ -36,8 +36,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         RequestQueue mRequestQueue=TUtil.startRequestQueue(TUtil.CACHE_DEFAULT);
         BitmapRequest request=new BitmapRequest(images[position], new Request.RequestListener<Bitmap>() {
             @Override
-            public void onComplete(Bitmap response) {
-                holder.imageView.setImageBitmap(response);
+            public void onComplete(Bitmap result) {
+                holder.imageView.setImageBitmap(result);
             }
 
             @Override
@@ -45,7 +45,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
             }
         });
-        mRequestQueue.addRequest(request);
     }
 
     @Override

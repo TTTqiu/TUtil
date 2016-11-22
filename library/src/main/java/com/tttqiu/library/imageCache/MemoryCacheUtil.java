@@ -8,18 +8,20 @@ import android.util.Log;
 
 /**
  * 内存缓存工具类
+ * <p>
  * 使用LruCache实现内存缓存
+ * <p>
  * LruCache的maxSize默认为系统给应用分配的最大缓存的 1/4
  * <p>
- * LruCache：基于LinkedHashMap的LRU顺序结构
- * 当插入或访问某一entry，同时会把这一entry移到链表的头端
+ * LruCache：基于LinkedHashMap的LRU顺序结构，
+ * 当插入或访问某一entry，同时会把这一entry移到链表的头端，
  * 当内存缓存总大小超过预设的maxSize，会自动从链表尾端开始移除数据，腾出空间
  */
 
 class MemoryCacheUtil {
 
     private LruCache<String, Bitmap> mLruCache;
-    private int maxSize=0;
+    private int maxSize = 0;
 
     /**
      * 将图片存入内存
@@ -47,8 +49,11 @@ class MemoryCacheUtil {
 
     /**
      * 创建LruCache
+     * <p>
      * 创建LruCache需要设定一个最大缓存容量maxSize，一般为系统给应用分配的最大缓存的 1/8
+     * <p>
      * sizeOf()方法，不复写返回的是条目个数（这时maxSize就设定为最大条目数目），一般要复写来返回条目大小
+     * <p>
      * 这里复写了sizeOf()方法，计算并返回每个Bitmap的大小
      */
     private void createLruCache() {

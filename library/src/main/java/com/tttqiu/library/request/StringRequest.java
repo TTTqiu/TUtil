@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Created by Administrator on 2016/11/17.
+ * 返回String类型数据的请求
  */
 
 public class StringRequest extends Request<String> {
@@ -16,17 +16,17 @@ public class StringRequest extends Request<String> {
     }
 
     @Override
-    protected String parseResponse(InputStream is) {
-        StringBuilder response=new StringBuilder();
-        BufferedReader br=new BufferedReader(new InputStreamReader(is));
+    public String parseResponse(InputStream inputStream) {
+        StringBuilder result=new StringBuilder();
+        BufferedReader br=new BufferedReader(new InputStreamReader(inputStream));
         String line;
         try {
             while ((line=br.readLine())!=null){
-                response.append(line);
+                result.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return response.toString();
+        return result.toString();
     }
 }

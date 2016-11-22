@@ -31,6 +31,12 @@ public class TUtil {
         mImageLoader.loadImageInto(context,address,imageView,maxMemorySpace,maxDiskSpace);
     }
 
+    /**
+     * 创建请求队列，并开启所有执行子线程
+     *
+     * @param threadNum 执行线程数量
+     * @return 请求队列
+     */
     public static RequestQueue startRequestQueue(int threadNum){
         if (mRequestQueue==null){
             Log.d("TUtil_Network","创建队列并开启所有线程。 "+"线程池容量："+threadNum);

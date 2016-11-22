@@ -9,26 +9,37 @@ import android.widget.ImageView;
 
 /**
  * 加载图片工具类
+ * <p>
  * 通过loadImageInto(String address, ImageView imageView)将网络图片加载到imageView
+ * <p>
  * 二级缓存：先到内存中找图片，没找到再去外部存储中找，没找到再去网络上下载，并存储到内存和外部存储中
+ * <p>
  * 可设置最大内存缓存空间和最大文件缓存空间
  * <p>
  * 内存缓存：
+ * <p>
  * 使用LruCache实现内存缓存
+ * <p>
  * LruCache的maxSize默认为系统给应用分配的最大缓存的 1/4
- * LruCache：基于LinkedHashMap的LRU顺序结构
- * 当插入或访问某一entry，同时会把这一entry移到链表的头端
+ * <p>
+ * LruCache：基于LinkedHashMap的LRU顺序结构，
+ * 当插入或访问某一entry，同时会把这一entry移到链表的头端，
  * 当内存缓存总大小超过预设的maxSize，会自动从链表尾端开始移除数据，腾出空间
  * <p>
  * 文件缓存：
+ * <p>
  * 文件名：图片url的hashCode
+ * <p>
  * 存放路径：/storage/emulated/0/Android/data/com.tttqiu.tutil/files/Pictures
+ * <p>
  * 默认使用文件缓存空间100MB
- * 通过getExternalFilesDir()方法得到文件保存路径
- * 这个路径是Android为每个App提供的私有文件缓存路径
+ * <p>
+ * 通过getExternalFilesDir()方法得到文件保存路径，
+ * 这个路径是Android为每个App提供的私有文件缓存路径，
  * 当App被删除时，这个目录也会被自动删除
- * 每次存入文件前检查
- * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时
+ * <p>
+ * 每次存入文件前检查，
+ * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，
  * 根据最后修改时间，删除掉30%最不常用的文件
  */
 
@@ -76,12 +87,12 @@ public class ImageLoader {
      * 初始化缓存，设置缓存空间
      */
     private void initCacheSpace(int maxMemorySpace, int maxDiskSpace) {
-        if (maxMemorySpace!= CACHE_DISABLE){
-            mMemoryCacheUtil=new MemoryCacheUtil();
+        if (maxMemorySpace != CACHE_DISABLE) {
+            mMemoryCacheUtil = new MemoryCacheUtil();
             mMemoryCacheUtil.setMemoryCacheSpace(maxMemorySpace);
         }
-        if (maxDiskSpace!= CACHE_DISABLE){
-            mDiskCacheUtil=new DiskCacheUtil();
+        if (maxDiskSpace != CACHE_DISABLE) {
+            mDiskCacheUtil = new DiskCacheUtil();
             mDiskCacheUtil.setDiskCacheSpace(maxDiskSpace);
         }
     }
@@ -94,51 +105,6 @@ public class ImageLoader {
         new GetBitmapFromHttpTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                 context, address, imageView, maxMemorySpace, maxDiskSpace);
     }
-
-//    /**
-//     * 从网络获取图片
-//     */
-//    private static void getBitmapFromHttp(final String address, ImageView imageView, final RequestListener listener) {
-//        if (executorService == null) {
-//            executorService = Executors.newFixedThreadPool(5);
-//        }
-//        executorService.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.d("ppqq", "" + Thread.currentThread().getName());
-//                HttpURLConnection connection = null;
-//                try {
-//                    URL url = new URL(address);
-//                    connection = (HttpURLConnection) url.openConnection();
-//                    connection.setRequestMethod("GET");
-//                    connection.setConnectTimeout(8000);
-//                    connection.setReadTimeout(8000);
-//                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                        InputStream is = connection.getInputStream();
-//                        final Bitmap bitmap = BitmapFactory.decodeStream(is);
-//                        handler.post(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                listener.onFinish(bitmap);
-//                            }
-//                        });
-//                        is.close();
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    if (connection != null) {
-//                        connection.disconnect();
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-//    public interface RequestListener {
-//        void onFinish(Bitmap bitmap);
-//    }
-
 
     /**
      * 从内存获取图片

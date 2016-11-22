@@ -16,12 +16,17 @@ import java.util.Comparator;
 
 /**
  * 文件缓存工具类
+ * <p>
  * 文件名：图片url的hashCode
+ * <p>
  * 存放路径：/storage/emulated/0/Android/data/com.tttqiu.tutil/files/Pictures
+ * <p>
  * 默认使用缓存空间100MB
  * <p>
  * 通过getExternalFilesDir()方法得到文件保存路径
+ * <p>
  * 这个路径是Android为每个App提供的私有文件缓存路径
+ * <p>
  * 当App被删除时，这个目录也会被自动删除
  */
 
@@ -36,8 +41,8 @@ class DiskCacheUtil {
     /**
      * 将图片存入文件
      * <p>
-     * 每次存入前检查
-     * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时
+     * 每次存入前检查，
+     * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，
      * 根据最后修改时间，删除掉30%最不常用的文件
      */
     void putBitmapToDisk(Context context, String address, Bitmap bitmap) {
@@ -70,6 +75,7 @@ class DiskCacheUtil {
 
     /**
      * 从文件中获取图片
+     *
      * 如果获取到，并且putToMemory为true，就在内存中存一份
      */
     Bitmap getBitmapFromDisk(Context context, String address, MemoryCacheUtil mMemoryCacheUtil) {
@@ -87,7 +93,7 @@ class DiskCacheUtil {
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + fileName);
         if (bitmap != null) {
             Log.d("TUtil_Image", "DC：从文件读取：" + bitmap + "(" + address + ")");
-            if (mMemoryCacheUtil!=null) {
+            if (mMemoryCacheUtil != null) {
                 mMemoryCacheUtil.putBitmapToMemory(address, bitmap);
             }
         }
@@ -105,7 +111,8 @@ class DiskCacheUtil {
 
     /**
      * 清理文件缓存
-     * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时
+     *
+     * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，
      * 根据最后修改时间，删除掉30%最不常用的文件
      */
     private void trimDiskCache(String dirPath) {
