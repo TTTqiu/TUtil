@@ -2,10 +2,8 @@ package com.tttqiu.library.request;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * 返回JsonBean类型数据的请求
@@ -23,18 +21,13 @@ public class GsonRequest<T> extends Request<T> {
     }
 
     @Override
-    public T parseResponse(InputStream inputStream) {
-        StringBuilder result = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
+    public T parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
+        String jsonString = byteArrayOutputStream.toString();
         try {
-            while ((line = br.readLine()) != null) {
-                result.append(line);
-            }
+            byteArrayOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String jsonString = result.toString();
         Gson gson = new Gson();
         return gson.fromJson(jsonString, clazz);
     }

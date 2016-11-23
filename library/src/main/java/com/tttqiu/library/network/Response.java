@@ -1,5 +1,7 @@
 package com.tttqiu.library.network;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * 网络响应类
  * <p>
@@ -8,7 +10,7 @@ package com.tttqiu.library.network;
 
 public class Response {
 
-    private Object content;
+    private ByteArrayOutputStream byteArrayOutputStream;
     private int responseCode;
     private String exceptionMessage;
 
@@ -28,11 +30,11 @@ public class Response {
         this.exceptionMessage = exceptionMessage;
     }
 
-    public Object getContent() {
-        return content;
+    public ByteArrayOutputStream getByteArrayOutputStream() {
+        return byteArrayOutputStream;
     }
 
-    public void setContent(Object content) {
-        this.content = content;
+    public void setByteArrayOutputStream(ByteArrayOutputStream byteArrayOutputStream) {
+        this.byteArrayOutputStream = byteArrayOutputStream;
     }
 }

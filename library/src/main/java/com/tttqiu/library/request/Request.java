@@ -2,7 +2,7 @@ package com.tttqiu.library.request;
 
 import com.tttqiu.library.network.Response;
 
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
  * 网络请求抽象类
@@ -28,7 +28,7 @@ public abstract class Request<T> {
      * 回调监听者
      */
     public void callbackComplete(Response response) {
-        T result = (T) response.getContent();
+        T result =parseResponse(response.getByteArrayOutputStream());
         if (result != null) {
             listener.onComplete(result);
         } else {
@@ -43,7 +43,7 @@ public abstract class Request<T> {
     /**
      * 解析响应数据
      */
-    public abstract T parseResponse(InputStream inputStream);
+    public abstract T parseResponse(ByteArrayOutputStream byteArrayOutputStream);
 
     /**
      * 请求结果监听者

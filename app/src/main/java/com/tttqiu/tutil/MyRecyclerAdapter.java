@@ -33,7 +33,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
 //        TUtil.loadImageInto(context, images[position], holder.imageView, TUtil.CACHE_DISABLE, TUtil.CACHE_DISABLE);
-        RequestQueue mRequestQueue=TUtil.startRequestQueue(TUtil.CACHE_DEFAULT);
+        RequestQueue mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
         BitmapRequest request=new BitmapRequest(images[position], new Request.RequestListener<Bitmap>() {
             @Override
             public void onComplete(Bitmap result) {
@@ -45,6 +45,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
             }
         });
+        mRequestQueue.addRequest(request);
     }
 
     @Override

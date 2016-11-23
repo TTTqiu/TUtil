@@ -14,7 +14,7 @@ import com.tttqiu.library.request.GsonRequest;
 import com.tttqiu.library.request.Request;
 import com.tttqiu.library.request.StringRequest;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private RequestQueue mRequestQueue;
 
@@ -59,18 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MyRecyclerAdapter adapter=new MyRecyclerAdapter(this,images);
         recyclerView.setAdapter(adapter);
 
-//        Button button1 = (Button) findViewById(R.id.button1);
-//        button1.setOnClickListener(this);
-//        Button button2 = (Button) findViewById(R.id.button2);
-//        button2.setOnClickListener(this);
-//        Button button3 = (Button) findViewById(R.id.button3);
-//        button3.setOnClickListener(this);
-//        Button button4 = (Button) findViewById(R.id.button4);
-//        button4.setOnClickListener(this);
-//        Button button5 = (Button) findViewById(R.id.button5);
-//        button5.setOnClickListener(this);
-
-//        mRequestQueue=TUtil.startRequestQueue(TUtil.CACHE_DEFAULT);
+//        mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
 //        GsonRequest<TitleBean> request=new GsonRequest<>("http://news-at.zhihu.com/api/4/news/latest",
 //                TitleBean.class,new Request.RequestListener<TitleBean>() {
 //                    @Override
@@ -91,11 +80,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
 //        for (int i = 0; i < 20; i++) {
+//            final int j=i;
 //            StringRequest request = new StringRequest("http://blog.csdn.net/bboyfeiyu/article/details/43015859",
 //                    new Request.RequestListener<String>() {
 //                        @Override
 //                        public void onComplete(String result) {
-//                            Log.d("ppqq", result);
+//                            Log.d("ppqq", ""+j+result);
 //                        }
 //
 //                        @Override
@@ -104,43 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        }
 //                    });
 //            mRequestQueue.addRequest(request);
-//        }
-    }
-
-    @Override
-    public void onClick(View view) {
-//        switch (view.getId()){
-//            case R.id.button1:
-//                mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
-//                break;
-//            case R.id.button2:
-//                for (int i=0;i<20;i++){
-//                    StringRequest request=new StringRequest("http://blog.csdn.net/bboyfeiyu/article/details/43015859",
-//                            new Request.RequestListener<String>() {
-//                        @Override
-//                        public void onComplete(String response) {
-//                            Log.d("ppqq",response);
-//                        }
-//
-//                        @Override
-//                        public void onError(String errorMessage) {
-//                            Log.d("ppqq",errorMessage);
-//                        }
-//                    });
-//                    mRequestQueue.addRequest(request);
-//                }
-//                break;
-//            case R.id.button3:
-//                mRequestQueue.start();
-//                break;
-//            case R.id.button4:
-//                mRequestQueue.stop();
-//                break;
-//            case R.id.button5:
-//                mRequestQueue.clear();
-//                break;
-//            default:
-//                break;
 //        }
     }
 }

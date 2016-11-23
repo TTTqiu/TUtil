@@ -2,6 +2,7 @@ package com.tttqiu.library.network;
 
 import com.tttqiu.library.request.Request;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -13,7 +14,7 @@ import java.net.URL;
 class RequestExecutor {
 
     /**
-     * 执行具体的请求操作，调用request的解析数据方法获得解析后的数据，并返回一个response
+     * 执行具体的请求操作，将响应数据转化为字符数组，并返回一个response
      */
     Response executeRequest(Request<?> request) {
         Response response = new Response();
@@ -28,8 +29,15 @@ class RequestExecutor {
             response.setResponseCode(connection.getResponseCode());
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 InputStream is = connection.getInputStream();
-                // 解析数据
-                response.setContent(request.parseResponse(is));
+                // 将inputStream转为字符数组
+                byte[] buffer=new byte[1024];
+                ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                int length;
+                while ((length=is.read(buffer))!=-1){
+                    byteArrayOutputStream.write(buffer,0,length);
+                }
+                response.setByteArrayOutputStream(byteArrayOutputStream);
+                buffer=null;
                 is.close();
             }
         } catch (Exception e) {
