@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-        MyRecyclerAdapter adapter=new MyRecyclerAdapter(this,images);
-        recyclerView.setAdapter(adapter);
+//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+//        MyRecyclerAdapter adapter = new MyRecyclerAdapter(this, images);
+//        recyclerView.setAdapter(adapter);
 
 //        mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
 //        GsonRequest<TitleBean> request=new GsonRequest<>("http://news-at.zhihu.com/api/4/news/latest",
@@ -95,5 +95,23 @@ public class MainActivity extends AppCompatActivity {
 //                    });
 //            mRequestQueue.addRequest(request);
 //        }
+
+        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
+        StringRequest request = new StringRequest(Request.GET, "http://apis.baidu.com/datatiny/cardinfo_vip/cardinfo_vip",
+                new Request.RequestListener<String>() {
+                    @Override
+                    public void onComplete(String result) {
+                        Log.d("ppqq", "onComplete  "+result);
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.d("ppqq", "onError  "+errorMessage);
+                    }
+                });
+        request.addHeader("apikey","7143934c4da9e05981d9dd1076ecbb96");
+        request.addParam("aaa","bbb");
+        request.addParam("ccc","ddd");
+        mRequestQueue.addRequest(request);
     }
 }
