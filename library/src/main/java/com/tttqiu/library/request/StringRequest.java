@@ -9,12 +9,12 @@ import java.io.IOException;
 
 public class StringRequest extends Request<String> {
 
-    public StringRequest(String address,Request.RequestListener<String> listener) {
-        super(address,listener);
+    public StringRequest(String method,String address,Request.RequestListener<String> listener) {
+        super(method,address,listener);
     }
 
     @Override
-    public String parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
+    protected String parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
         String result=byteArrayOutputStream.toString();
         try {
             byteArrayOutputStream.close();

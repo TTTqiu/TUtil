@@ -15,11 +15,14 @@ import java.util.concurrent.BlockingQueue;
 class RequestThread extends Thread {
 
     private BlockingQueue<Request<?>> queue;
-    private ResponseDelivery mResponseDelivery = new ResponseDelivery();
-    private RequestExecutor mRequestExecutor = new RequestExecutor();
+    private ResponseDelivery mResponseDelivery;
+    private RequestExecutor mRequestExecutor;
 
-    RequestThread(BlockingQueue<Request<?>> queue) {
+    RequestThread(BlockingQueue<Request<?>> queue,RequestExecutor requestExecutor,
+                  ResponseDelivery responseDelivery) {
         this.queue = queue;
+        mRequestExecutor=requestExecutor;
+        mResponseDelivery=responseDelivery;
     }
 
     @Override

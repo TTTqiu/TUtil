@@ -12,12 +12,12 @@ import java.io.IOException;
 
 public class BitmapRequest extends Request<Bitmap> {
 
-    public BitmapRequest(String address, RequestListener<Bitmap> listener) {
-        super(address,listener);
+    public BitmapRequest(String method,String address, RequestListener<Bitmap> listener) {
+        super(method,address,listener);
     }
 
     @Override
-    public Bitmap parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
+    protected Bitmap parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
         Bitmap result=BitmapFactory.decodeByteArray(
                 byteArrayOutputStream.toByteArray(),0,byteArrayOutputStream.size());
         try {

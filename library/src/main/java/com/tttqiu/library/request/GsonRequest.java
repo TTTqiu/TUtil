@@ -15,13 +15,13 @@ public class GsonRequest<T> extends Request<T> {
 
     private Class<T> clazz;
 
-    public GsonRequest(String address, Class<T> clazz, RequestListener<T> listener) {
-        super(address, listener);
+    public GsonRequest(String method,String address, Class<T> clazz, RequestListener<T> listener) {
+        super(method,address, listener);
         this.clazz = clazz;
     }
 
     @Override
-    public T parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
+    protected T parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
         String jsonString = byteArrayOutputStream.toString();
         try {
             byteArrayOutputStream.close();

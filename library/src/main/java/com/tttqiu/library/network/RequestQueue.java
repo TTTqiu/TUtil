@@ -21,9 +21,13 @@ public class RequestQueue {
     private BlockingQueue<Request<?>> queue;
     private int threadNum;
     private RequestThread[] mRequestThreads;
+    private ResponseDelivery mResponseDelivery ;
+    private RequestExecutor mRequestExecutor ;
 
     public RequestQueue(int threadNum) {
         queue = new LinkedBlockingQueue<Request<?>>();
+        mRequestExecutor=new RequestExecutor();
+        mResponseDelivery=new ResponseDelivery();
         this.threadNum = threadNum > 0 ? threadNum : DEFAULT_THREAD_NUM;
     }
 
@@ -46,7 +50,7 @@ public class RequestQueue {
         stop();
         mRequestThreads = new RequestThread[threadNum];
         for (int i = 0; i < threadNum; i++) {
-            mRequestThreads[i] = new RequestThread(queue);
+            mRequestThreads[i] = new RequestThread(queue,mRequestExecutor,mResponseDelivery);
             mRequestThreads[i].start();
         }
         Log.d("TUtil_Network", "新开所有请求线程");
