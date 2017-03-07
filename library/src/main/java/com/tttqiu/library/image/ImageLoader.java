@@ -1,4 +1,4 @@
-package com.tttqiu.library.imageCache;
+package com.tttqiu.library.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -59,8 +59,8 @@ public class ImageLoader {
      * @param maxMemorySpace 最大内存缓存空间，单位MB CACHE_DEFAULT：默认大小 CACHE_DISABLE：不使用该缓存
      * @param maxDiskSpace   最大文件缓存空间，单位MB CACHE_DEFAULT：默认大小 CACHE_DISABLE：不使用该缓存
      */
-    public void loadImageInto(Context context, String address, ImageView imageView,
-                              int maxMemorySpace, int maxDiskSpace) {
+    public void loadImage(Context context, String address, ImageView imageView,
+                          int maxMemorySpace, int maxDiskSpace) {
         // 透明占位图
         imageView.setImageDrawable(new ColorDrawable(Color.WHITE));
         imageView.setImageAlpha(0);
@@ -102,8 +102,7 @@ public class ImageLoader {
      */
     private void getBitmapFromHttp(Context context, String address, ImageView imageView,
                                    int maxMemorySpace, int maxDiskSpace) {
-        new GetBitmapFromHttpTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                context, address, imageView, maxMemorySpace, maxDiskSpace);
+
     }
 
     /**

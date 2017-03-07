@@ -1,5 +1,6 @@
 package com.tttqiu.library.network;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.tttqiu.library.request.Request;
@@ -23,11 +24,13 @@ public class RequestQueue {
     private RequestThread[] mRequestThreads;
     private ResponseDelivery mResponseDelivery ;
     private RequestExecutor mRequestExecutor ;
+    private DiskCacheUtil mDiskCacheUtil ;
 
-    public RequestQueue(int threadNum) {
+    public RequestQueue(Context context,int threadNum) {
         queue = new LinkedBlockingQueue<Request<?>>();
         mRequestExecutor=new RequestExecutor();
         mResponseDelivery=new ResponseDelivery();
+        mDiskCacheUtil=new DiskCacheUtil(context);
         this.threadNum = threadNum > 0 ? threadNum : DEFAULT_THREAD_NUM;
     }
 
@@ -50,7 +53,7 @@ public class RequestQueue {
         stop();
         mRequestThreads = new RequestThread[threadNum];
         for (int i = 0; i < threadNum; i++) {
-            mRequestThreads[i] = new RequestThread(queue,mRequestExecutor,mResponseDelivery);
+            mRequestThreads[i] = new RequestThread(queue,mRequestExecutor,mResponseDelivery,mDiskCacheUtil);
             mRequestThreads[i].start();
         }
         Log.d("TUtil_Network", "新开所有请求线程");

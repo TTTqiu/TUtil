@@ -9,18 +9,14 @@ import java.io.IOException;
 
 public class StringRequest extends Request<String> {
 
-    public StringRequest(String method,String address,Request.RequestListener<String> listener) {
-        super(method,address,listener);
+    public StringRequest(String method,Boolean shouldCache,String address,Request.RequestListener<String> listener) {
+        super(method,shouldCache,address,listener);
     }
 
     @Override
-    protected String parseResponse(ByteArrayOutputStream byteArrayOutputStream) {
-        String result=byteArrayOutputStream.toString();
-        try {
-            byteArrayOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected String parseResponse(byte[] data) {
+        String result=new String(data);
+        data=null;
         return result;
     }
 }

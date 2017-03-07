@@ -1,4 +1,4 @@
-package com.tttqiu.library.imageCache;
+package com.tttqiu.library.image;
 
 
 import android.graphics.Bitmap;
@@ -30,8 +30,8 @@ class MemoryCacheUtil {
         createLruCache();
         Bitmap oldValue = mLruCache.put(key, value);
         if (oldValue == null) {
-            Log.d("TUtil_Image", "MC：存入内存：" + value + "(" + key + ")");
-            Log.d("TUtil_Image", "MC：内存缓存总大小：" + mLruCache.size() / 1024 + "KB");
+            Log.d("TUtil_Cache", "MC：存入内存：" + value + "(" + key + ")");
+            Log.d("TUtil_Cache", "MC：内存缓存总大小：" + mLruCache.size() / 1024 + "KB");
         }
     }
 
@@ -42,7 +42,7 @@ class MemoryCacheUtil {
         createLruCache();
         Bitmap bitmap = mLruCache.get(key);
         if (bitmap != null) {
-            Log.d("TUtil_Image", "MC：从内存读取：" + bitmap + "(" + key + ")");
+            Log.d("TUtil_Cache", "MC：从内存读取：" + bitmap + "(" + key + ")");
         }
         return bitmap;
     }
@@ -62,7 +62,7 @@ class MemoryCacheUtil {
                 // 如果用户没自定义最大空间，设置LruCache最大缓存为系统给应用分配的最大缓存的 1/4
                 maxSize = (int) (Runtime.getRuntime().maxMemory() / 4);
             }
-            Log.d("TUtil_Image", "MC：创建 LruCache：maxSize=" + maxSize / 1024 + "KB");
+            Log.d("TUtil_Cache", "MC：创建 LruCache：maxSize=" + maxSize / 1024 + "KB");
             mLruCache = new LruCache<String, Bitmap>(maxSize) {
                 @Override
                 // 不复写返回的是条目个数，复写返回条目大小
@@ -80,7 +80,7 @@ class MemoryCacheUtil {
                             size = value.getRowBytes() * value.getHeight();
                         }
                     }
-                    Log.d("TUtil_Image", "size=" + size / 1024 + "KB");
+                    Log.d("TUtil_Cache", "size=" + size / 1024 + "KB");
                     return size;
                 }
 
@@ -91,7 +91,7 @@ class MemoryCacheUtil {
                 protected void entryRemoved(boolean evicted, String key, Bitmap oldValue, Bitmap newValue) {
                     super.entryRemoved(evicted, key, oldValue, newValue);
                     if (evicted) {
-                        Log.d("TUtil_Image", "MC：移出缓存：" + key);
+                        Log.d("TUtil_Cache", "MC：移出缓存：" + key);
                     }
                 }
             };

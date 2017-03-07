@@ -1,10 +1,7 @@
 package com.tttqiu.library.request;
 
-import android.util.Log;
-
 import com.tttqiu.library.network.Response;
 
-import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -28,12 +25,14 @@ public abstract class Request<T> {
     private RequestListener<T> listener;
     private String url;
     private String method;
+    private Boolean needCache=false;
     private Map<String, String> params = new HashMap<>();
     private Map<String, String> headers = new HashMap<>();
 
-    public Request(String method, String url, RequestListener<T> listener) {
+    public Request(String method, Boolean needCache, String url, RequestListener<T> listener) {
         this.method = method;
         this.url = url;
+        this.needCache = needCache;
         this.listener = listener;
     }
 
@@ -73,6 +72,7 @@ public abstract class Request<T> {
                             .append(URLEncoder.encode(entry.getValue(), DEFAULT_PARAM_ENCODE))
                             .append("&");
                 }
+                // 去掉最后一个“&”
                 bodyString.deleteCharAt(bodyString.length() - 1);
                 body = bodyString.toString().getBytes(DEFAULT_PARAM_ENCODE);
             } catch (UnsupportedEncodingException e) {
@@ -86,11 +86,13 @@ public abstract class Request<T> {
      * 回调监听者
      */
     public void callbackComplete(Response response) {
-        if (response.getByteArrayOutputStream() != null) {
-            T result = parseResponse(response.getByteArrayOutputStream());
+        if (response.getData() != null) {
+            T result = parseResponse(response.getData());
             listener.onComplete(result);
         } else {
-            listener.onError(response.getExceptionMessage());
+            String errorMessage = null;
+            errorMessage=response.getExceptionMessage();
+            listener.onError(errorMessage);
         }
     }
 
@@ -125,10 +127,14 @@ public abstract class Request<T> {
         return url;
     }
 
+    public Boolean isNeedCache() {
+        return needCache;
+    }
+
     /**
      * 解析响应数据
      */
-    protected abstract T parseResponse(ByteArrayOutputStream byteArrayOutputStream);
+    protected abstract T parseResponse(byte[] data);
 
     /**
      * 请求结果监听者

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.android.volley.toolbox.Volley;
 import com.tttqiu.library.TUtil;
 import com.tttqiu.library.network.RequestQueue;
 import com.tttqiu.library.request.GsonRequest;
@@ -54,20 +55,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-//        MyRecyclerAdapter adapter = new MyRecyclerAdapter(this, images);
-//        recyclerView.setAdapter(adapter);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        MyRecyclerAdapter adapter = new MyRecyclerAdapter(this, images);
+        recyclerView.setAdapter(adapter);
 
-//        mRequestQueue=TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
-//        GsonRequest<TitleBean> request=new GsonRequest<>("http://news-at.zhihu.com/api/4/news/latest",
+//        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
+//        GsonRequest<TitleBean> request = new GsonRequest<>(Request.GET, false,
+//                "http://news-at.zhihu.com/api/4/news/latest",
 //                TitleBean.class,new Request.RequestListener<TitleBean>() {
+//            @Override
+//            public void onComplete(TitleBean result) {
+//                Log.d("ppqq", "" + result.getDate());
+//                Log.d("ppqq", "" + result.getStories()[0].getTitle());
+//                Log.d("ppqq", "" + result.getStories()[0].getImages()[0]);
+//                Log.d("ppqq", "" + result.getStories()[0].getId());
+//            }
+//
+//            @Override
+//            public void onError(String errorMessage) {
+//
+//            }
+//        });
+//        mRequestQueue.addRequest(request);
+
+//        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
+//        StringRequest request = new StringRequest(Request.GET, false,
+//                "http://apis.baidu.com/datatiny/cardinfo_vip/cardinfo_vip",
+//                new Request.RequestListener<String>() {
 //                    @Override
-//                    public void onComplete(TitleBean result) {
-//                        Log.d("ppqq",""+result.getDate());
-//                        Log.d("ppqq",""+result.getStories()[0].getTitle());
-//                        Log.d("ppqq",""+result.getStories()[0].getImages()[0]);
-//                        Log.d("ppqq",""+result.getStories()[0].getId());
+//                    public void onComplete(String result) {
+//                        Log.d("ppqq", "onComplete  "+result);
 //                    }
 //
 //                    @Override
@@ -75,43 +93,9 @@ public class MainActivity extends AppCompatActivity {
 //
 //                    }
 //                });
+//        request.addHeader("apikey","7143934c4da9e05981d9dd1076ecbb96");
+//        request.addParam("aaa","bbb");
+//        request.addParam("ccc","ddd");
 //        mRequestQueue.addRequest(request);
-
-
-//        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
-//        for (int i = 0; i < 20; i++) {
-//            final int j=i;
-//            StringRequest request = new StringRequest("http://blog.csdn.net/bboyfeiyu/article/details/43015859",
-//                    new Request.RequestListener<String>() {
-//                        @Override
-//                        public void onComplete(String result) {
-//                            Log.d("ppqq", ""+j+result);
-//                        }
-//
-//                        @Override
-//                        public void onError(String errorMessage) {
-//                            Log.d("ppqq", errorMessage);
-//                        }
-//                    });
-//            mRequestQueue.addRequest(request);
-//        }
-
-        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
-        StringRequest request = new StringRequest(Request.GET, "http://apis.baidu.com/datatiny/cardinfo_vip/cardinfo_vip",
-                new Request.RequestListener<String>() {
-                    @Override
-                    public void onComplete(String result) {
-                        Log.d("ppqq", "onComplete  "+result);
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.d("ppqq", "onError  "+errorMessage);
-                    }
-                });
-        request.addHeader("apikey","7143934c4da9e05981d9dd1076ecbb96");
-        request.addParam("aaa","bbb");
-        request.addParam("ccc","ddd");
-        mRequestQueue.addRequest(request);
     }
 }

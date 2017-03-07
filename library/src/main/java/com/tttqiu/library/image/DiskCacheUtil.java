@@ -1,4 +1,4 @@
-package com.tttqiu.library.imageCache;
+package com.tttqiu.library.image;
 
 
 import android.content.Context;
@@ -47,7 +47,7 @@ class DiskCacheUtil {
      */
     void putBitmapToDisk(Context context, String address, Bitmap bitmap) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Log.d("TUtil_Image", "DC：外部存储不可用");
+            Log.d("TUtil_Cache", "DC：外部存储不可用");
             return;
         }
 
@@ -66,7 +66,7 @@ class DiskCacheUtil {
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
         try {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
-            Log.d("TUtil_Image", "DC：存入文件：" + bitmap + "(" + fileName + ")");
+            Log.d("TUtil_Cache", "DC：存入文件：" + bitmap + "(" + fileName + ")");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,7 +80,7 @@ class DiskCacheUtil {
      */
     Bitmap getBitmapFromDisk(Context context, String address, MemoryCacheUtil mMemoryCacheUtil) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Log.d("TUtil_Image", "DC：外部存储不可用");
+            Log.d("TUtil_Cache", "DC：外部存储不可用");
             return null;
         }
 
@@ -92,7 +92,7 @@ class DiskCacheUtil {
         Bitmap bitmap = BitmapFactory.decodeFile(
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + fileName);
         if (bitmap != null) {
-            Log.d("TUtil_Image", "DC：从文件读取：" + bitmap + "(" + address + ")");
+            Log.d("TUtil_Cache", "DC：从文件读取：" + bitmap + "(" + address + ")");
             if (mMemoryCacheUtil != null) {
                 mMemoryCacheUtil.putBitmapToMemory(address, bitmap);
             }
@@ -129,20 +129,19 @@ class DiskCacheUtil {
             dirSize += file.length();
         }
 
-        Log.d("TUtil_Image", "DC：文件存储空间：" + maxSize);
-        Log.d("TUtil_Image", "DC：文件总大小：" + dirSize);
+        Log.d("TUtil_Cache", "DC：文件存储空间：" + maxSize);
+        Log.d("TUtil_Cache", "DC：文件总大小：" + dirSize);
 
         // 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，删除掉30%最不常用的文件
         if (dirSize > maxSize || MIN_DISK_FREE_SPACE > DiskFreeSpace()) {
             int removeCount = (int) (0.3 * files.length);
             Arrays.sort(files, new FileLastModifiedSort());
             for (int i = 0; i < removeCount; i++) {
-                Log.d("TUtil_Image", "DC：删除文件：" + files[i].getName() + "(" + files[i].lastModified() + ")");
+                Log.d("TUtil_Cache", "DC：删除文件：" + files[i].getName() + "(" + files[i].lastModified() + ")");
                 files[i].delete();
             }
         }
     }
-
 
     /**
      * 设置文件最后修改时间

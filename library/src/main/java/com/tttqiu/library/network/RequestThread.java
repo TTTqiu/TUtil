@@ -17,12 +17,14 @@ class RequestThread extends Thread {
     private BlockingQueue<Request<?>> queue;
     private ResponseDelivery mResponseDelivery;
     private RequestExecutor mRequestExecutor;
+    private DiskCacheUtil mDiskCacheUtil;
 
     RequestThread(BlockingQueue<Request<?>> queue,RequestExecutor requestExecutor,
-                  ResponseDelivery responseDelivery) {
+                  ResponseDelivery responseDelivery,DiskCacheUtil diskCacheUtil) {
         this.queue = queue;
         mRequestExecutor=requestExecutor;
         mResponseDelivery=responseDelivery;
+        mDiskCacheUtil=diskCacheUtil;
     }
 
     @Override
@@ -32,8 +34,13 @@ class RequestThread extends Thread {
                 Request<?> request = queue.take();
                 Log.d("TUtil_Network", "当前线程：" + Thread.currentThread().getName());
                 Log.d("TUtil_Network", "queue size:" + queue.size());
-                // 把request交给请求执行者执行请求并返回response
-                Response response = mRequestExecutor.executeRequest(request);
+                Response response=null;
+                if (mDiskCacheUtil.isCached(request)){
+
+                }else {
+                    // 把request交给请求执行者执行请求并返回response
+                    response = mRequestExecutor.executeRequest(request);
+                }
                 // 把response交给响应结果投递者投递到主线程处理
                 mResponseDelivery.deliverResponse(request, response);
             }

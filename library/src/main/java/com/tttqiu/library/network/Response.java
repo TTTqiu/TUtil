@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 
 public class Response {
 
-    private ByteArrayOutputStream byteArrayOutputStream;
+    private byte[] data;
     private int responseCode;
     private String exceptionMessage;
 
@@ -30,11 +30,11 @@ public class Response {
         this.exceptionMessage = exceptionMessage;
     }
 
-    public ByteArrayOutputStream getByteArrayOutputStream() {
-        return byteArrayOutputStream;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setByteArrayOutputStream(ByteArrayOutputStream byteArrayOutputStream) {
-        this.byteArrayOutputStream = byteArrayOutputStream;
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }

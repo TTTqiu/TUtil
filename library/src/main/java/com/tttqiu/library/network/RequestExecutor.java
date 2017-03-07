@@ -1,17 +1,13 @@
 package com.tttqiu.library.network;
 
-import android.util.Log;
-
 import com.tttqiu.library.request.Request;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -21,7 +17,7 @@ import java.util.Map;
 class RequestExecutor {
 
     /**
-     * 执行具体的请求操作，将响应数据转化为字符数组，并返回一个response
+     * 执行具体的请求操作，将响应数据转化为字节数组，并返回一个response
      */
     Response executeRequest(Request<?> request) {
         Response response;
@@ -31,7 +27,7 @@ class RequestExecutor {
             response = executePostRequest(request);
         } else {
             response = new Response();
-            response.setExceptionMessage("method 错误");
+            response.setExceptionMessage("错误 method");
         }
         return response;
     }
@@ -52,7 +48,7 @@ class RequestExecutor {
             setHeaders(request,connection);
             response.setResponseCode(connection.getResponseCode());
             if (response.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                response.setByteArrayOutputStream(IsToByte(connection.getInputStream()));
+                response.setData(inputStreamToByte(connection.getInputStream()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,7 +85,7 @@ class RequestExecutor {
             }
             response.setResponseCode(connection.getResponseCode());
             if (response.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                response.setByteArrayOutputStream(IsToByte(connection.getInputStream()));
+                response.setData(inputStreamToByte(connection.getInputStream()));
             }
             if (outputStream != null) {
                 outputStream.close();
@@ -106,22 +102,25 @@ class RequestExecutor {
     }
 
     /**
-     * 将inputStream转为字符数组
+     * 将inputStream转为字节数组
      */
-    private ByteArrayOutputStream IsToByte(InputStream inputStream) {
+    private byte[] inputStreamToByte(InputStream inputStream) {
         byte[] buffer = new byte[1024];
+        byte[] data = null;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int length;
         try {
             while ((length = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, length);
             }
+            data=byteArrayOutputStream.toByteArray();
+            byteArrayOutputStream.close();
             buffer = null;
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return byteArrayOutputStream;
+        return data;
     }
 
     /**
