@@ -11,8 +11,12 @@ import android.util.Log;
 
 import com.tttqiu.library.request.Request;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -36,9 +40,21 @@ class DiskCacheUtil {
     // 使用的最大文件存储空间，单位B
     private int maxSize = 100 * 1024 * 1024;
     private Context context;
+    private File dirPath;
 
     DiskCacheUtil(Context context) {
         this.context = context;
+        dirPath = context.getExternalFilesDir(null);
+
+        /*
+        getExternalFilesDir(null);
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        Environment.getExternalStorageDirectory();
+          分别返回：
+        /storage/emulated/0/Android/data/com.tttqiu.tutil/files/Pictures
+        /storage/emulated/0/Pictures
+        /storage/emulated/0
+        */
     }
 
     /**
@@ -48,76 +64,103 @@ class DiskCacheUtil {
      * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，
      * 根据最后修改时间，删除掉30%最不常用的文件
      */
-    void putByteToDisk(String address, byte[] data) {
+    void putByteToDisk(String url, byte[] data) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Log.d("TUtil_Cache", "DC：外部存储不可用");
             return;
         }
 
-        trimDiskCache(context.getExternalFilesDir(null) + "");
+        trimDiskCache(dirPath + "");
 
-        String fileName = address.hashCode() + "";
-        /*
-        getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
-        Environment.getExternalStorageDirectory());
-          分别返回：
-        /storage/emulated/0/Android/data/com.tttqiu.tutil/files/Pictures
-        /storage/emulated/0/Pictures
-        /storage/emulated/0
-        */
-//        File file = new File(context.getExternalFilesDir(null), fileName);
-//        FileOutputStream fos=new FileOutputStream(file);
-//        try {
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
-//            Log.d("TUtil_Cache", "DC：存入文件：" + bitmap + "(" + fileName + ")");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        String fileName = url.hashCode() + "";
+
+        File file = new File(dirPath, fileName);
+        FileOutputStream fos = null;
+        BufferedOutputStream bos = null;
+        try {
+            fos = new FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            bos.write(data);
+            bos.flush();
+            Log.d("TUtil_Cache", "DC：存入文件："+fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
-
     /**
-     * 从文件中获取图片
-     * <p>
-     * 如果获取到，并且putToMemory为true，就在内存中存一份
+     * 从文件中获取数据
      */
-    Bitmap getByteFromDisk(Context context, String address) {
+    byte[] getByteFromDisk(String url) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Log.d("TUtil_Cache", "DC：外部存储不可用");
             return null;
         }
 
-        String fileName = address.hashCode() + "";
+        String fileName = url.hashCode() + "";
+        File file=new File(dirPath,fileName);
 
         // 更新文件最后修改时间
-        setFileModifiedTime(context, fileName);
+        setFileModifiedTime(file);
 
-        Bitmap bitmap = BitmapFactory.decodeFile(
-                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + fileName);
-//        if (bitmap != null) {
-//            Log.d("TUtil_Cache", "DC：从文件读取：" + bitmap + "(" + address + ")");
-//            if (mMemoryCacheUtil != null) {
-//                mMemoryCacheUtil.putBitmapToMemory(address, bitmap);
-//            }
-//        }
-        return bitmap;
+        byte[] buffer=new byte[1024];
+        byte[] data =null;
+        int length;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileInputStream fis=null;
+        try {
+            fis=new FileInputStream(file);
+            while ((length=fis.read(buffer))!=-1){
+                baos.write(buffer,0,length);
+            }
+            data=baos.toByteArray();
+            baos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (fis!=null){
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Log.d("TUtil_Cache", "DC：从文件中获取数据："+fileName);
+        return data;
     }
 
+    /**
+     * 检查请求是否已被缓存
+     */
     Boolean isCached(Request<?> request) {
-//        File file = new File(context.getExternalFilesDir(null), request.getUrl().hashCode() + "");
-//        return file.exists();
-        return false;
+        File file = new File(dirPath, request.getUrl().hashCode() + "");
+        return file.exists();
     }
 
     /**
      * 设置最大文件缓存空间
      */
-    void setDiskCacheSpace(int maxSpace) {
-        if (maxSpace > 0) {
-            maxSize = maxSpace * 1024 * 1024;
-        }
-    }
+//    void setDiskCacheSpace(int maxSpace) {
+//        if (maxSpace > 0) {
+//            maxSize = maxSpace * 1024 * 1024;
+//        }
+//    }
 
     /**
      * 清理文件缓存
@@ -145,6 +188,7 @@ class DiskCacheUtil {
         // 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，删除掉30%最不常用的文件
         if (dirSize > maxSize || MIN_DISK_FREE_SPACE > DiskFreeSpace()) {
             int removeCount = (int) (0.3 * files.length);
+            // 按文件最后修改时间重新排列files
             Arrays.sort(files, new FileLastModifiedSort());
             for (int i = 0; i < removeCount; i++) {
                 Log.d("TUtil_Cache", "DC：删除文件：" + files[i].getName() + "(" + files[i].lastModified() + ")");
@@ -156,8 +200,7 @@ class DiskCacheUtil {
     /**
      * 设置文件最后修改时间
      */
-    private void setFileModifiedTime(Context context, String fileName) {
-        File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
+    private void setFileModifiedTime(File file) {
         long newModifiedTime = System.currentTimeMillis();
         file.setLastModified(newModifiedTime);
     }
@@ -173,7 +216,7 @@ class DiskCacheUtil {
         } else {
             diskFree = stat.getAvailableBlocks() * stat.getBlockSize();
         }
-        return (int) diskFree / (1024 * 1024);
+        return (int) (diskFree / (1024 * 1024));
     }
 
     /**

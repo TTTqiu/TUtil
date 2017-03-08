@@ -19,12 +19,12 @@ class RequestThread extends Thread {
     private RequestExecutor mRequestExecutor;
     private DiskCacheUtil mDiskCacheUtil;
 
-    RequestThread(BlockingQueue<Request<?>> queue,RequestExecutor requestExecutor,
-                  ResponseDelivery responseDelivery,DiskCacheUtil diskCacheUtil) {
+    RequestThread(BlockingQueue<Request<?>> queue, RequestExecutor requestExecutor,
+                  ResponseDelivery responseDelivery, DiskCacheUtil diskCacheUtil) {
         this.queue = queue;
-        mRequestExecutor=requestExecutor;
-        mResponseDelivery=responseDelivery;
-        mDiskCacheUtil=diskCacheUtil;
+        mRequestExecutor = requestExecutor;
+        mResponseDelivery = responseDelivery;
+        mDiskCacheUtil = diskCacheUtil;
     }
 
     @Override
@@ -34,15 +34,26 @@ class RequestThread extends Thread {
                 Request<?> request = queue.take();
                 Log.d("TUtil_Network", "当前线程：" + Thread.currentThread().getName());
                 Log.d("TUtil_Network", "queue size:" + queue.size());
-                Response response=null;
-                if (mDiskCacheUtil.isCached(request)){
 
+                Response response;
+
+                if (mDiskCacheUtil.isCached(request)){
+                    // 如果有文件缓存，读取缓存
+                    response=new Response();
+                    response.setData(mDiskCacheUtil.getByteFromDisk(request.getUrl()));
                 }else {
-                    // 把request交给请求执行者执行请求并返回response
+                    // 如果没缓存，把request交给请求执行者执行请求并返回response
                     response = mRequestExecutor.executeRequest(request);
                 }
                 // 把response交给响应结果投递者投递到主线程处理
                 mResponseDelivery.deliverResponse(request, response);
+                // 如果需要就把数据缓存到文件
+                if (request.isNeedCache()&&!mDiskCacheUtil.isCached(request)) {
+                    byte[] data = response.getData();
+                    if (data != null && data.length != 0) {
+                        mDiskCacheUtil.putByteToDisk(request.getUrl(), data);
+                    }
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -15,9 +15,14 @@ import com.tttqiu.library.request.GsonRequest;
 import com.tttqiu.library.request.Request;
 import com.tttqiu.library.request.StringRequest;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-    private RequestQueue mRequestQueue;
+public class MainActivity extends AppCompatActivity {
 
     private String[] images = {
             "http://pic2.zhimg.com/bd24a341131d7fd8a6d832b8dbe08f15.jpg",

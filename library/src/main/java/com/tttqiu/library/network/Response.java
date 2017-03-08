@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 
 public class Response {
 
-    private byte[] data;
+    private byte[] data = null;
     private int responseCode;
     private String exceptionMessage;
 
