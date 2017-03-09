@@ -25,14 +25,17 @@ public abstract class Request<T> {
     private RequestListener<T> listener;
     private String url;
     private String method;
-    private Boolean needCache=false;
+    private Boolean needMemoryCache=false;
+    private Boolean needDiskCache=false;
     private Map<String, String> params = new HashMap<>();
     private Map<String, String> headers = new HashMap<>();
 
-    public Request(String method, Boolean needCache, String url, RequestListener<T> listener) {
+    public Request(String method, Boolean needMemoryCache,Boolean needDiskCache, String url,
+                   RequestListener<T> listener) {
         this.method = method;
         this.url = url;
-        this.needCache = needCache;
+        this.needMemoryCache = needMemoryCache;
+        this.needDiskCache = needDiskCache;
         this.listener = listener;
     }
 
@@ -83,20 +86,6 @@ public abstract class Request<T> {
     }
 
     /**
-     * 回调监听者
-     */
-    public void callbackComplete(Response response) {
-        if (response.getData() != null) {
-            T result = parseResponse(response.getData());
-            listener.onComplete(result);
-        } else {
-            String errorMessage = null;
-            errorMessage=response.getExceptionMessage();
-            listener.onError(errorMessage);
-        }
-    }
-
-    /**
      * 获取拼接了参数的url
      */
     public String getParamUrl() {
@@ -127,9 +116,29 @@ public abstract class Request<T> {
         return url;
     }
 
-    public Boolean isNeedCache() {
-        return needCache;
+    public Boolean isNeedMemoryCache() {
+        return needMemoryCache;
     }
+
+    public Boolean isNeedDiskCache() {
+        return needDiskCache;
+    }
+
+
+    /**
+     * 回调监听者
+     */
+    public void callbackComplete(Response response) {
+        if (response.getData() != null) {
+            T result = parseResponse(response.getData());
+            listener.onComplete(result);
+        } else {
+            String errorMessage = null;
+            errorMessage=response.getExceptionMessage();
+            listener.onError(errorMessage);
+        }
+    }
+
 
     /**
      * 解析响应数据

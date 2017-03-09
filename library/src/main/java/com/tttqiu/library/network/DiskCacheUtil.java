@@ -23,7 +23,7 @@ import java.util.Comparator;
 /**
  * 文件缓存工具类
  * <p>
- * 文件名：图片url的hashCode
+ * 文件名：url的hashCode
  * <p>
  * 存放路径：/storage/emulated/0/Android/data/com.tttqiu.tutil/files
  * <p>
@@ -39,11 +39,9 @@ class DiskCacheUtil {
     private static final int MIN_DISK_FREE_SPACE = 100;
     // 使用的最大文件存储空间，单位B
     private int maxSize = 100 * 1024 * 1024;
-    private Context context;
     private File dirPath;
 
     DiskCacheUtil(Context context) {
-        this.context = context;
         dirPath = context.getExternalFilesDir(null);
 
         /*
@@ -69,8 +67,12 @@ class DiskCacheUtil {
             Log.d("TUtil_Cache", "DC：外部存储不可用");
             return;
         }
+        if (maxSize==0){
+            Log.d("TUtil_Cache", "DC：不使用文件缓存");
+            return;
+        }
 
-        trimDiskCache(dirPath + "");
+        trimDiskCache();
 
         String fileName = url.hashCode() + "";
 
@@ -148,19 +150,19 @@ class DiskCacheUtil {
     /**
      * 检查请求是否已被缓存
      */
-    Boolean isCached(Request<?> request) {
+    Boolean isDiskCached(Request<?> request) {
         File file = new File(dirPath, request.getUrl().hashCode() + "");
         return file.exists();
     }
 
     /**
-     * 设置最大文件缓存空间
+     * 设置最大文件缓存空间，单位MB
      */
-//    void setDiskCacheSpace(int maxSpace) {
-//        if (maxSpace > 0) {
-//            maxSize = maxSpace * 1024 * 1024;
-//        }
-//    }
+    void setDiskCacheSpace(int maxSpace) {
+        if (maxSpace >= 0) {
+            maxSize = maxSpace * 1024 * 1024;
+        }
+    }
 
     /**
      * 清理文件缓存
@@ -168,9 +170,8 @@ class DiskCacheUtil {
      * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，
      * 根据最后修改时间，删除掉30%最不常用的文件
      */
-    private void trimDiskCache(String dirPath) {
-        File dir = new File(dirPath);
-        File[] files = dir.listFiles();
+    private void trimDiskCache() {
+        File[] files = dirPath.listFiles();
 
         if (files == null) {
             return;
@@ -203,6 +204,16 @@ class DiskCacheUtil {
     private void setFileModifiedTime(File file) {
         long newModifiedTime = System.currentTimeMillis();
         file.setLastModified(newModifiedTime);
+    }
+
+    /**
+     * 删除所有文件缓存
+     */
+    void deleteAllCache() {
+        File[] files=dirPath.listFiles();
+        for (File file:files){
+            file.delete();
+        }
     }
 
     /**

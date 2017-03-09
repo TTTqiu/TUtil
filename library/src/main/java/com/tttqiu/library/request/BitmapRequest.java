@@ -12,8 +12,9 @@ import java.io.IOException;
 
 public class BitmapRequest extends Request<Bitmap> {
 
-    public BitmapRequest(String method,Boolean shouldCache,String address, RequestListener<Bitmap> listener) {
-        super(method,shouldCache,address,listener);
+    public BitmapRequest(String method,Boolean needMemoryCache,Boolean needDiskCache,
+                         String address,Request.RequestListener<Bitmap> listener) {
+        super(method,needMemoryCache,needDiskCache,address,listener);
     }
 
     @Override

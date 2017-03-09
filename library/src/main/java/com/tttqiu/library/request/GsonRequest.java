@@ -15,8 +15,9 @@ public class GsonRequest<T> extends Request<T> {
 
     private Class<T> clazz;
 
-    public GsonRequest(String method,Boolean shouldCache, Class<T> clazz,String address, RequestListener<T> listener) {
-        super(method,shouldCache, address,listener);
+    public GsonRequest(String method,Boolean needMemoryCache,Boolean needDiskCache,Class<T> clazz,
+                       String address, RequestListener<T> listener) {
+        super(method,needMemoryCache,needDiskCache, address,listener);
         this.clazz = clazz;
     }
 

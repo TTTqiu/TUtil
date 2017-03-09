@@ -9,8 +9,9 @@ import java.io.IOException;
 
 public class StringRequest extends Request<String> {
 
-    public StringRequest(String method,Boolean shouldCache,String address,Request.RequestListener<String> listener) {
-        super(method,shouldCache,address,listener);
+    public StringRequest(String method,Boolean needMemoryCache,Boolean needDiskCache,
+                         String address,Request.RequestListener<String> listener) {
+        super(method,needMemoryCache,needDiskCache,address,listener);
     }
 
     @Override

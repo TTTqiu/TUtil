@@ -7,6 +7,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.volley.toolbox.Volley;
 import com.tttqiu.library.TUtil;
@@ -24,6 +25,9 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private RequestQueue mRequestQueue;
+    private TextView textView;
+    private Button button;
     private String[] images = {
             "http://pic2.zhimg.com/bd24a341131d7fd8a6d832b8dbe08f15.jpg",
             "http://pic3.zhimg.com/fa745034caf4bd52fe2c981b3f6cbece.jpg",
@@ -65,16 +69,26 @@ public class MainActivity extends AppCompatActivity {
         MyRecyclerAdapter adapter = new MyRecyclerAdapter(this, images);
         recyclerView.setAdapter(adapter);
 
-//        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
-//        GsonRequest<TitleBean> request = new GsonRequest<>(Request.GET, false,
+        textView=(TextView) findViewById(R.id.text);
+        button=(Button)findViewById(R.id.button1);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRequestQueue.deleteAllDiskCache();
+            }
+        });
+
+
+//        mRequestQueue = TUtil.startRequestQueue(this,RequestQueue.DEFAULT_THREAD_NUM);
+//        GsonRequest<TitleBean> request = new GsonRequest<>(Request.GET, true,TitleBean.class,
 //                "http://news-at.zhihu.com/api/4/news/latest",
-//                TitleBean.class,new Request.RequestListener<TitleBean>() {
+//                new Request.RequestListener<TitleBean>() {
 //            @Override
 //            public void onComplete(TitleBean result) {
-//                Log.d("ppqq", "" + result.getDate());
-//                Log.d("ppqq", "" + result.getStories()[0].getTitle());
-//                Log.d("ppqq", "" + result.getStories()[0].getImages()[0]);
-//                Log.d("ppqq", "" + result.getStories()[0].getId());
+//                textView.setText(result.getDate()+"\n"+
+//                        result.getStories()[0].getTitle()+"\n"+
+//                        result.getStories()[0].getImages()[0]+"\n"+
+//                        result.getStories()[0].getId());
 //            }
 //
 //            @Override
@@ -84,13 +98,13 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //        mRequestQueue.addRequest(request);
 
-//        mRequestQueue = TUtil.startRequestQueue(RequestQueue.DEFAULT_THREAD_NUM);
-//        StringRequest request = new StringRequest(Request.GET, false,
-//                "http://apis.baidu.com/datatiny/cardinfo_vip/cardinfo_vip",
+//        mRequestQueue = TUtil.startRequestQueue(this,RequestQueue.DEFAULT_THREAD_NUM);
+//        StringRequest request = new StringRequest(Request.GET, false,false,
+//                "http://www.jianshu.com/p/01c148b2ddd9",
 //                new Request.RequestListener<String>() {
 //                    @Override
 //                    public void onComplete(String result) {
-//                        Log.d("ppqq", "onComplete  "+result);
+//                        textView.setText(result);
 //                    }
 //
 //                    @Override
@@ -98,9 +112,20 @@ public class MainActivity extends AppCompatActivity {
 //
 //                    }
 //                });
-//        request.addHeader("apikey","7143934c4da9e05981d9dd1076ecbb96");
-//        request.addParam("aaa","bbb");
-//        request.addParam("ccc","ddd");
+//        StringRequest request2 = new StringRequest(Request.GET, false,false,
+//                "http://www.jianshu.com/u/389f2e8fe38c",
+//                new Request.RequestListener<String>() {
+//                    @Override
+//                    public void onComplete(String result) {
+//                        textView.setText(result);
+//                    }
+//
+//                    @Override
+//                    public void onError(String errorMessage) {
+//
+//                    }
+//                });
 //        mRequestQueue.addRequest(request);
+//        mRequestQueue.addRequest(request2);
     }
 }
