@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.tttqiu.library.TUtil;
 import com.tttqiu.library.network.RequestQueue;
+import com.tttqiu.library.network.Response;
 import com.tttqiu.library.request.BitmapRequest;
 import com.tttqiu.library.request.Request;
 
@@ -40,7 +41,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             }
 
             @Override
-            public void onError(String errorMessage) {
+            public void onError(Response response) {
 
             }
         });

@@ -1,9 +1,7 @@
-package com.tttqiu.library.network;
+package com.tttqiu.library.cache;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
@@ -33,7 +31,7 @@ import java.util.Comparator;
  * 当App被删除时，这个目录也会被自动删除
  */
 
-class DiskCacheUtil {
+public class DiskCacheUtil {
 
     // 磁盘最小空余空间，单位MB
     private static final int MIN_DISK_FREE_SPACE = 100;
@@ -41,7 +39,7 @@ class DiskCacheUtil {
     private int maxSize = 100 * 1024 * 1024;
     private File dirPath;
 
-    DiskCacheUtil(Context context) {
+    public DiskCacheUtil(Context context) {
         dirPath = context.getExternalFilesDir(null);
 
         /*
@@ -62,7 +60,7 @@ class DiskCacheUtil {
      * 当缓存文件总大小大于预设的最大文件存储空间，或磁盘剩余空间不足100MB时，
      * 根据最后修改时间，删除掉30%最不常用的文件
      */
-    void putByteToDisk(String url, byte[] data) {
+    public void putByteToDisk(String url, byte[] data) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Log.d("TUtil_Cache", "DC：外部存储不可用");
             return;
@@ -108,7 +106,7 @@ class DiskCacheUtil {
     /**
      * 从文件中获取数据
      */
-    byte[] getByteFromDisk(String url) {
+    public byte[] getByteFromDisk(String url) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Log.d("TUtil_Cache", "DC：外部存储不可用");
             return null;
@@ -150,7 +148,7 @@ class DiskCacheUtil {
     /**
      * 检查请求是否已被缓存
      */
-    Boolean isDiskCached(Request<?> request) {
+    public Boolean isDiskCached(Request<?> request) {
         File file = new File(dirPath, request.getUrl().hashCode() + "");
         return file.exists();
     }
@@ -158,7 +156,7 @@ class DiskCacheUtil {
     /**
      * 设置最大文件缓存空间，单位MB
      */
-    void setDiskCacheSpace(int maxSpace) {
+    public void setDiskCacheSpace(int maxSpace) {
         if (maxSpace >= 0) {
             maxSize = maxSpace * 1024 * 1024;
         }
@@ -209,7 +207,7 @@ class DiskCacheUtil {
     /**
      * 删除所有文件缓存
      */
-    void deleteAllCache() {
+    public void deleteAllCache() {
         File[] files=dirPath.listFiles();
         for (File file:files){
             file.delete();

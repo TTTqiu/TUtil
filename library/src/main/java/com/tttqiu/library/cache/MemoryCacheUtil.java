@@ -1,8 +1,6 @@
-package com.tttqiu.library.network;
+package com.tttqiu.library.cache;
 
 
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
@@ -18,7 +16,7 @@ import android.util.Log;
  * 当内存缓存总大小超过预设的maxSize，会自动从链表尾端开始移除数据，腾出空间
  */
 
-class MemoryCacheUtil {
+public class MemoryCacheUtil {
 
     private LruCache<String, byte[]> mLruCache;
     private int maxSize = -1;
@@ -26,7 +24,7 @@ class MemoryCacheUtil {
     /**
      * 将数据存入内存
      */
-    void putByteToMemory(String key, byte[] value) {
+    public void putByteToMemory(String key, byte[] value) {
         if (maxSize==0){
             Log.d("TUtil_Cache", "MC：不使用内存缓存");
             return;
@@ -43,7 +41,7 @@ class MemoryCacheUtil {
     /**
      * 将数据从内存中取出
      */
-    byte[] getByteFromMemory(String key) {
+    public byte[] getByteFromMemory(String key) {
         if (maxSize==0){
             Log.d("TUtil_Cache", "MC：不使用内存缓存");
             return null;
@@ -100,7 +98,7 @@ class MemoryCacheUtil {
     /**
      * 设置最大内存缓存空间
      */
-    void setMemoryCacheSpace(int maxSpace) {
+    public void setMemoryCacheSpace(int maxSpace) {
         if (maxSpace >= 0) {
             maxSize = maxSpace * 1024 * 1024;
         }

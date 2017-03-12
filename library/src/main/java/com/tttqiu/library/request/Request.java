@@ -133,9 +133,7 @@ public abstract class Request<T> {
             T result = parseResponse(response.getData());
             listener.onComplete(result);
         } else {
-            String errorMessage = null;
-            errorMessage=response.getExceptionMessage();
-            listener.onError(errorMessage);
+            listener.onError(response);
         }
     }
 
@@ -151,6 +149,6 @@ public abstract class Request<T> {
     public interface RequestListener<T> {
         void onComplete(T result);
 
-        void onError(String errorMessage);
+        void onError(Response response);
     }
 }

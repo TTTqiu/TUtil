@@ -2,10 +2,8 @@ package com.tttqiu.library;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.tttqiu.library.network.RequestQueue;
-import com.tttqiu.library.image.ImageLoader;
 
 /**
  * 网络请求和缓存工具

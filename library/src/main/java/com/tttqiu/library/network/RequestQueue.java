@@ -3,6 +3,8 @@ package com.tttqiu.library.network;
 import android.content.Context;
 import android.util.Log;
 
+import com.tttqiu.library.cache.DiskCacheUtil;
+import com.tttqiu.library.cache.MemoryCacheUtil;
 import com.tttqiu.library.request.Request;
 
 import java.util.concurrent.BlockingQueue;
