@@ -1,3 +1,4 @@
+# TUtil
 网络请求和缓存工具库
 
 # 添加依赖：
@@ -8,10 +9,10 @@
 Add it in your root build.gradle at the end of repositories:
 ```
 	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+	    repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	    }
 	}
 ```
 
